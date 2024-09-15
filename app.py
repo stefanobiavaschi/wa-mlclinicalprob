@@ -1,5 +1,6 @@
 import streamlit as st
 import pandas as pd
+import numpy as np
 
 from lib.inference import inference_prob
 from lib.map_classification import maps_class
@@ -11,7 +12,7 @@ st.title("Classificatore Emogas/Patologie - Versione beta")
 columns = ['SESSO', 'ETA', 'TIPO', 'PF', 'PO2_T', 'P50_ACT', 'TO2', 'AG_K', 'THB2',
            'GLU', 'LAC', 'PO2', 'HCO3', 'PCO2_T', 'MOSM', 'KP', 'NA', 'CL',
            'CBASE', 'METHB', 'PH', 'O2HB', 'COHB', 'B', 'TC', 'FIO2',
-           'CODICE_SINTOMO', 'DATA']
+           'class_symptom', 'DATA']
 
 
 # ----------------  INSERT VALUES ---------------- #
@@ -37,7 +38,7 @@ for col in columns1:
     elif col == 'DATA':
         data[col] = st_col1.date_input(f"Inserisci {col}")
     else:
-        data[col] = st_col1.text_input(f"Inserisci {col}")
+        data[col] = st_col1.number_input(f"Inserisci {col}")
 
 for col in columns2:
     if col == 'SESSO':
@@ -49,8 +50,10 @@ for col in columns2:
         data[col] = st_col2.number_input(f"Inserisci {col}", min_value=0, step=1, value=50)
     elif col == 'DATA':
         data[col] = st_col2.date_input(f"Inserisci {col}")
+    elif col == "class_symptom":
+        data[col] = st_col2.selectbox(f"Seleziona {col}", options=[0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16])
     else:
-        data[col] = st_col2.text_input(f"Inserisci {col}")
+        data[col] = st_col2.number_input(f"Inserisci {col}")
 
 
 
@@ -62,17 +65,18 @@ st.write("Riepilogo valori inseriti:")
 st.dataframe(df)
 
 
-values = ['F', 79, 'Venoso', 89.04761904761904, 18.7, 33.27, 4.1, 12.3, 13.7, 108.0, 0.7, 20.1, 25.8, 44.4, 290.9, 4.4,
-            142.0, 109.0, 1.0, 0.7, 7.362, 21.4, 0.3, 754.0, 36.0, 21.0, 10, -0.8958392907349089, -0.4443781781046134 ]
+# Estrae il giorno dell'anno
+df['day_of_year'] = df['DATA'].apply(lambda x: x.timetuple().tm_yday)
 
-columns = ['SESSO', 'ETA', 'TIPO', 'PF', 'PO2_T', 'P50_ACT', 'TO2', 'AG_K', 'THB2',
-       'GLU', 'LAC', 'PO2', 'HCO3', 'PCO2_T', 'MOSM', 'KP', 'NA', 'CL',
-       'CBASE', 'METHB', 'PH', 'O2HB', 'COHB', 'B', 'TC', 'FIO2',
-       'class_symptom', 'sin_day', 'cos_day' ]
+# Calcola le nuove colonne "sin_day" e "cos_day"
+df['sin_day'] = np.sin(2 * np.pi * df['day_of_year'] / 365)
+df['cos_day'] = np.cos(2 * np.pi * df['day_of_year'] / 365)
+
+df = df.drop(columns=[ "DATA", "day_of_year" ])
 
 # Pulsante per avviare il calcolo
 if st.button("Calcola"):
-    class_int, list_prob = inference_prob(columns, values)  # Chiamata alla funzione importata
+    class_int, list_prob = inference_prob( df )  # Chiamata alla funzione importata
     class_str = maps_class(class_int)
     confidence = list_prob[class_int]
 
