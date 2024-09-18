@@ -8,6 +8,21 @@ from lib.map_classification import maps_class
 # Page Title
 st.title("Classificatore Emogas/Patologie - Versione beta")
 
+st.markdown("""
+***Funzionamento dell'applicativo:***
+Inserire i dati del paziente di test, dopodichè cliccare sul bottone "***Inferenza***".
+
+Uscirà come risultato la ***patologia*** individuata dal modello per il paziente di test e la relativa ***confidenza***. Per valutare l'attendibilità del dato con una certa confidenza, consultare la sezione "***Performance***".
+
+Inoltre, verranno mostrate anche le successive 4 patologie (se esistono) che il modello identifica con una confidenza maggiore.
+
+
+***N.B:*** 
+- Questa web-app ha lo scopo di illustrare il funzionamento del modello di AI costruito durante lo sviluppo, ed in particolare di illustrare la struttura di input e di output.
+- Inoltre, il modello è stato addestrato sui dati degli Emogas condotti in pronto soccorso, quindi su dei pazienti con DETERMINATI SINTOMI.
+- Di conseguenza, questa web app non ha lo scopo (ne la capacità) di diagnosticare alcun tipo di patologia a dei pazienti che inseriscono in autonomia i propri dati.
+""")
+
 # Columns input
 columns = ['SESSO', 'ETA', 'TIPO', 'PF', 'PO2_T', 'P50_ACT', 'TO2', 'AG_K', 'THB2',
            'GLU', 'LAC', 'PO2', 'HCO3', 'PCO2_T', 'MOSM', 'KP', 'NA', 'CL',
@@ -75,7 +90,7 @@ df['cos_day'] = np.cos(2 * np.pi * df['day_of_year'] / 365)
 df = df.drop(columns=[ "DATA", "day_of_year" ])
 
 # Pulsante per avviare il calcolo
-if st.button("Calcola"):
+if st.button("Inferenza"):
     class_int, list_prob = inference_prob( df )  # Chiamata alla funzione importata
     class_str = maps_class(class_int)
     confidence = list_prob[class_int]
