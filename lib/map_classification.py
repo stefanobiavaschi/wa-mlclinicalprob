@@ -45,3 +45,6 @@ def maps_class_long(class_int):
             }
 
     return D_map[class_int]
+
+def map_symptoms(symp_int):
+        return True
