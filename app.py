@@ -3,7 +3,12 @@ import pandas as pd
 import numpy as np
 
 from lib.inference import inference_prob
-from lib.map_classification import maps_class
+from lib.map_classification import maps_class, maps_class_long
+
+st.set_page_config(
+    page_title="ML - Clinical Probability",
+    page_icon=":microscope:"
+    )
 
 # Page Title
 st.title("Classificatore Emogas/Patologie - Versione beta")
@@ -12,7 +17,9 @@ st.markdown("""
 ***Funzionamento dell'applicativo:***
 Inserire i dati del paziente di test, dopodichè cliccare sul bottone "***Inferenza***".
 
-Uscirà come risultato la ***patologia*** individuata dal modello per il paziente di test e la relativa ***confidenza***. Per valutare l'attendibilità del dato con una certa confidenza, consultare la sezione "***Performance***".
+Uscirà come risultato la ***patologia*** individuata dal modello per il paziente di test e la relativa ***confidenza***.
+
+Per valutare l'attendibilità del dato con una certa confidenza, consultare la sezione "***Performance***".
 
 Inoltre, verranno mostrate anche le successive 4 patologie (se esistono) che il modello identifica con una confidenza maggiore.
 
@@ -89,10 +96,13 @@ df['cos_day'] = np.cos(2 * np.pi * df['day_of_year'] / 365)
 
 df = df.drop(columns=[ "DATA", "day_of_year" ])
 
+st_col1, st_col2, _, _ = st.columns(4)
+
 # Pulsante per avviare il calcolo
-if st.button("Inferenza"):
+if st_col1.button("Inferenza"):
     class_int, list_prob = inference_prob( df )  # Chiamata alla funzione importata
     class_str = maps_class(class_int)
+    class_str_long = maps_class_long(class_int)
     confidence = list_prob[class_int]
 
     # Determina il colore del riquadro in base a 'probability'
@@ -106,8 +116,11 @@ if st.button("Inferenza"):
     # Mostra il risultato in un riquadro colorato
     st.markdown(f"""
         <div style="background-color: {box_color}; padding: 10px; border-radius: 5px;">
-            <h4>Risultato più probabile:</h4>
-            <p>{class_str}</p>
+            <h4>Output del modello:</h4>
+            <p>{class_str} - {class_str_long}</p>
             <p><strong>Confidenza: {confidence:.2f}</strong></p>
         </div>
     """, unsafe_allow_html=True)
+
+if st_col2.button("Performance"):
+    pass
