@@ -46,5 +46,31 @@ def maps_class_long(class_int):
 
     return D_map[class_int]
 
-def map_symptoms(symp_int):
-        return True
+def map_symptoms(symp_str):
+
+    D_map = {
+            0 : "ALTRO",
+            1 : "DISTURBI PSICHICI",
+            2 : "CEFALEA",
+            3 : "INTOSSICAZIONE",
+            4 : "ALTERAZIONE PARAMETRI VITALI",
+            5 : "EMORRAGIE",
+            6 : "TRAUMA GRAVE",
+            7 : "PERDITA DI CONOSCENZA (SINCOPE)",
+            8 : "TRAUMA",
+            9 : "CARDIOPALMO",
+            10 : "TRAUMA MINORE",
+            11 : "FEBBRE-PROTOCOLLO SEPSI",
+            12 : "DOLORE TORACICO",
+            13 : "DOLORE ADDOMINALE",
+            14 : "DISTURBI NEUROLOGICI",
+            15 : "SEGNI / SINTOMI MINORI",
+            16 : "DISPNEA"
+            }
+
+
+    for key, value in D_map.items():
+        if symp_str == value:
+                return key
+
+    

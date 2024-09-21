@@ -36,3 +36,41 @@ COLONNE:
        'GLU', 'LAC', 'PO2', 'HCO3', 'PCO2_T', 'MOSM', 'KP', 'NA', 'CL',
        'CBASE', 'METHB', 'PH', 'O2HB', 'COHB', 'B', 'TC', 'FIO2',
        'class_symptom', 'sin_day', 'cos_day']
+
+
+
+
+ALTRO (SINTOMI):
+
+['DOLORE DORSALE O LOMBARE', 'USTIONI', 'SPECIALISTICA',
+       'Ginecologia - Dolore addominale',
+       'Ginecologia - Perdita ematica (S.)',
+       'Ginecologia - Dolore/Bruciore Urinario/Vulvovaginale',
+       'Ginecologia - Contraccezione post coitale',
+       'Ostetricia - Mancata visualizz./percezione BCF, >=23 settimane di E.G.',
+       'Ostetricia - Mancata visualizzaz./percezione BCF. <=22 settimane di E.G.',
+       'Ostetricia - Cefalea (Dolore cranico)',
+       'Ostetricia - Contrazioni uterine',
+       'Ostetricia - Dolore addominale',
+       'Ostetricia - Dolore Lombo-sacrale',
+       'Ostetricia - Ipertensione arteriosa (H.)',
+       'Ostetricia - Movimenti fetali (MAF) ridotti/non percepiti',
+       'Ostetricia - Nausea e vomito',
+       'Ostetricia - Perdite non ematiche',
+       'Ostetricia - Sanguinamento (S.)>= 23 settimane di e.g.',
+       'Ostetricia - Sanguinamento (S.)<= 22 settimane di e.g.',
+       'Ostetricia - Sanguinamento (S.) in puerperio',
+       'Ginecologia - Algie Pelviche',
+       'Ginecologia - Controllo Ferita Chirurgica',
+       'Ginecologia - Tumefazione vulvare',
+       'Ostetricia - Gravidanza:Ipertermia',
+       'Ostetricia - Puerperio: ipertermia',
+       'Ostetricia - Puerperio - Dolore mammario',
+       'Ostetricia - Lipotimia in Gravidanza',
+       'Ostetricia - Algie Pelviche in Gravidanza (NON contrazioni Uterine)',
+       'Ostetricia - Puerperio - Controllo Ferita Chirurgia / Episioraffia',
+       'Ostetricia - Prurito / Bruciore Vulvare in Gravidenza',
+       'Ostetricia - Anomalie del liquido amniotico',
+       "Ostetricia - Alterazioni dell'accrescimento fetale",
+       'Ostetricia - Minaccia di parto pretermine', 'FERITE',
+       'SINTOMI O DISTURBI OCULISTICI', nan]
