@@ -2,7 +2,6 @@ import streamlit as st
 import pandas as pd
 import numpy as np
 
-from lib.inference import inference_prob
 from lib.map_classification import maps_class, maps_class_long
 
 from lib.func_page import page_inference, page_performance

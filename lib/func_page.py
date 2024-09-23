@@ -2,7 +2,7 @@ import streamlit as st
 import pandas as pd
 import numpy as np
 
-from lib.inference import inference_prob
+from lib.inference import inference_prob_17, inference_prob_6
 from lib.map_classification import maps_class, maps_class_long, map_symptoms
 
 
@@ -75,7 +75,7 @@ def page_inference():
     data['B'] = st_col2.number_input(f"Inserisci B", min_value=733.00, max_value=777.00, step=0.1, value=755.00)
     data['TC'] = st_col2.number_input(f"Inserisci TC", min_value=33.0, max_value=41.50, step=0.1, value=36.00)
     data['FIO2'] = st_col2.number_input(f"Inserisci FIO2", min_value=21.00, max_value=100.00, step=0.1, value=21.00)
-    data["SINTOMO"] = st_col2.selectbox(f"Seleziona SINTOMO", options=['DOLORE TORACICO', 'CARDIOPALMO', 'TRAUMA GRAVE', 'TRAUMA ',
+    data["SINTOMO"] = st_col2.selectbox(f"Seleziona SINTOMO", options=['DOLORE TORACICO', 'CARDIOPALMO', 'TRAUMA GRAVE', 'TRAUMA',
                                                                 'DISTURBI PSICHICI', 'DISPNEA', 'DISTURBI NEUROLOGICI', 'CEFALEA',
                                                                 'EMORRAGIE', 'PERDITA DI CONOSCENZA (SINCOPE)',
                                                                 'SEGNI / SINTOMI MINORI', 'INTOSSICAZIONE',
@@ -108,11 +108,11 @@ def page_inference():
             'CBASE', 'METHB', 'PH', 'O2HB', 'COHB', 'B', 'TC', 'FIO2',
             'class_symptom', 'sin_day', 'cos_day']]
 
-    st_col1, st_col2, _, _ = st.columns(4)
+    st_col1, st_col2, st_col3, _ = st.columns(4)
 
     # Pulsante per avviare il calcolo
-    if st_col1.button("Inferenza"):
-        class_int, list_prob = inference_prob( df )  # Chiamata alla funzione importata
+    if st_col1.button("Inferenza - 17 classi"):
+        class_int, list_prob = inference_prob_17( df )  # Chiamata alla funzione importata
         class_str = maps_class(class_int)
         class_str_long = maps_class_long(class_int)
         confidence = list_prob[class_int]
@@ -159,13 +159,91 @@ def page_inference():
                 """, unsafe_allow_html=True)
 
 
+    # Pulsante per avviare il calcolo
+    if st_col2.button("Inferenza - 6 classi"):
+        class_int, list_prob = inference_prob_6( df )  # Chiamata alla funzione importata
+        class_str = maps_class(class_int)
+        class_str_long = maps_class_long(class_int)
+        confidence = list_prob[class_int]
 
-    if st_col2.button("Performance"):
+        D = {}
+        for i in range(len(list_prob)):
+            D[i] = list_prob[i]
+
+        # Determina il colore del riquadro in base a 'probability'
+        if confidence < 0.3:
+            box_color = "#ffcccc"  # Rosso chiaro
+        elif confidence < 0.7:
+            box_color = "#ffffcc"  # Giallo chiaro
+        else:
+            box_color = "#ccffcc"  # Verde chiaro
+
+        # Mostra il risultato in un riquadro colorato
+        st.markdown(f"""
+            <div style="background-color: {box_color}; padding: 10px; border-radius: 5px;">
+                <h4>Output del modello:</h4>
+                <p>{class_str} - {class_str_long}</p>
+                <p><strong>Confidenza: {confidence:.2f}</strong></p>
+            </div>
+        """, unsafe_allow_html=True)
+
+        sorted_D = dict(sorted(D.items(), key=lambda item: item[1], reverse=True)[1:3])
+
+        # Crea due colonne
+        st_col21, st_col22 = st.columns(2)
+
+        # Mostra i primi due elementi nella prima colonna e i successivi due nella seconda
+        for i, (key, value) in enumerate(sorted_D.items()):
+            if i ==1:
+                st_col21.markdown(f"""
+                    <div style="background-color: lightgray; padding: 10px; border-radius: 5px; margin-bottom: 10px;">
+                        <strong>{maps_class(key)}</strong> : {value}
+                    </div>
+                """, unsafe_allow_html=True)
+            else:
+                st_col22.markdown(f"""
+                    <div style="background-color: lightgray; padding: 10px; border-radius: 5px; margin-bottom: 10px;">
+                        <strong>{maps_class(key)}</strong> : {value}
+                    </div>
+                """, unsafe_allow_html=True)
+
+
+
+    if st_col3.button("Performance"):
         st.session_state.page = "page_performance"
 
 
 def page_performance():
-    st.markdown("Pagina delle performance")
+    st.markdown("""## Versione 17 classi
+***Descrizione classi:***
+
+Le Diagnosi dei pazienti vengono raggruppate secondo la classificazione ICD-9 nei diciassette capitoli di appartenenza, qui sotto elencati:
+- 0 - TRM - Traumatismi e avvelenamenti
+- 1 - INF - Malattie infettive e parassitarie
+- 2 - NEOP - Tumori
+- 3 - EN/IM - Malattie delle ghiandole endocrine, della nutrizione e del metabolismo, e disturbi immunitari
+- 4 - EMO - Malattie del sangue e organi emopoietici
+- 5 - MENT - Disturbi mentali
+- 6 - NERV - Malattie del sistema nervoso e degli organi di senso
+- 7 - CARD - Malattie del sistema circolatorio
+- 8 - RESP - Malattie dell’apparato respiratorio
+- 9 - DIG - Malattie dell’apparato digerente
+- 10 - GEN - Malattie dell’apparato genitourinario
+- 11 - GRAV - Complicazioni della gravidanza, del parto e del puerperio
+- 12 - CT/CNN - Malattie della pelle e del tessuto sottocutaneo
+- 13 - LOC - Malattie del sistema osteomuscolare e del tessuto connettivo
+- 14 - MALF - Malformazioni congenite
+- 15 - P.NAT - Alcune condizioni morbose di origine perinatale
+- 16 - MAL - Sintomi, segni, e stati morbosi maldefiniti    
+    """)
+
+    st.image("images/confusion_matrix_17_v1.jpeg", caption="Matrice di confusione del modello a 17 classi")
+    st.image("images/confusion_matrix_17_vth_65.jpeg", caption="Matrice di confusione del modello a 17 classi, fissata la threshold sulla confidenza a 0.65")
+
+
+
+
+
 
 
     if st.button("Back to Inference"):
