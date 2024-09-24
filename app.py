@@ -4,7 +4,7 @@ import numpy as np
 
 from lib.map_classification import maps_class, maps_class_long
 
-from lib.func_page import page_inference, page_performance
+from lib.func_page import page_inference, page_performance_6, page_performance_17
 
 
 def main():
@@ -17,7 +17,8 @@ def main():
     # Definizione delle pagine
     pages = {
         "page_inference": page_inference,
-        "page_performance": page_performance
+        "page_performance_6": page_performance_6,
+        "page_performance_17": page_performance_17
         }
 
     # Inizializzazione della sessione

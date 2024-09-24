@@ -12,22 +12,50 @@ def page_inference():
     st.title("Classificatore Emogas/Patologie - Versione beta")
 
     st.markdown("""
-    ***Funzionamento dell'applicativo:***
-    Inserire i dati del paziente di test, dopodichè cliccare sul bottone "***Inferenza***".
+#### Introduzione:
+Questo sito raccoglie i principali risultati ottenuti durante il lavoro svolto per una tesi di laura in medicina, con applicazione nella Data Science.
 
-    Uscirà come risultato la ***patologia*** individuata dal modello per il paziente di test e la relativa ***confidenza***.
+L'obiettivo era quello di costruire un modello, basato sull'intelligenza artificiale e sui dati a disposizione, che prendesse in input i parametri estratti dall'Emogasanalisi (https://it.wikipedia.org/wiki/Emogasanalisi) classificando la patologia più probabile associata al paziente, sulla base di quanto appreso dai dati del passato.
 
-    Per valutare l'attendibilità del dato con una certa confidenza, consultare la sezione "***Performance***".
+Sono state implementate diverse versione del modello, ognuna delle quali sono state testate sui dati di 10607 pazienti differenti.
 
-    Inoltre, verranno mostrate anche le successive 4 patologie (se esistono) che il modello identifica con una confidenza maggiore.
+In questa pagina è possibile testare manualmente due tra i diversi modelli sviluppati, inserendo dei dati di test.
+
+Inoltre, è possibile consultare le performance ottenute dai due diversi modelli.
 
 
-    ***N.B:*** 
-    - Questa web-app ha lo scopo di illustrare il funzionamento del modello di AI costruito durante lo sviluppo, ed in particolare di illustrare la struttura di input e di output.
-    - Inoltre, il modello è stato addestrato sui dati degli Emogas condotti in pronto soccorso, quindi su dei pazienti con DETERMINATI SINTOMI.
-    - Di conseguenza, questa web app non ha lo scopo (ne la capacità) di diagnosticare alcun tipo di patologia a dei pazienti che inseriscono in autonomia i propri dati.
+
+#### Funzionamento dell'applicativo:
+Inserire i dati del paziente di test, dopodichè cliccare su uno dei bottoni per l'***Inferenza***.
+
+Ci sono due versioni del modello: la prima fa inferenza su una tra 17 possibili classi, la seconda fa inferenza su una tra 6 possibili classi.
+Per i dattagli, consultare le sezioni relative alle ***Performance***.
+
+Una volta cliccato il bottone inferenza, uscirà come risultato la ***patologia*** individuata dal modello per il paziente di test e la relativa ***confidenza***.
+
+Per valutare l'attendibilità del dato con una certa confidenza, consultare la corrispondente sezione delle ***Performance***.
+
+Inoltre, se esistono, verranno mostrate alcune patologie che il modello identifica successivamente, anche se con una confidenza minore.
+
+
+***N.B:*** 
+- Questa web-app ha lo scopo di illustrare il funzionamento dei modelli di AI costruiti durante lo sviluppo, ed in particolare di illustrare la struttura di input e di output.
+- Inoltre, i modello è stato addestrato sui dati degli Emogas condotti in pronto soccorso, quindi su dei pazienti con determinati sintomi.
+- Di conseguenza, questa web app non ha lo scopo (ne la capacità) di diagnosticare alcun tipo di patologia a dei pazienti che inseriscono in autonomia i propri dati.
     """)
 
+    st.markdown("""### Per consultare le performance """)
+
+    st_col1, st_col2, st_col3 = st.columns(3)
+
+    if st_col1.button("Performance - 17 classi"):
+        st.session_state.page = "page_performance_17"
+
+    if st_col2.button("Performance - 6 classi"):
+        st.session_state.page = "page_performance_6"
+
+
+    st.markdown(""" ### Sezione per l'inferenza """)
     # Columns input
     columns = ['SESSO', 'ETA', 'TIPO', 'PF', 'PO2_T', 'P50_ACT', 'TO2', 'AG_K', 'THB2',
             'GLU', 'LAC', 'PO2', 'HCO3', 'PCO2_T', 'MOSM', 'KP', 'NA', 'CL',
@@ -47,6 +75,8 @@ def page_inference():
 
 
     st_col1, st_col2 = st.columns(2)
+
+
 
     data['SESSO'] = st_col1.selectbox(f"Seleziona Sesso", options=["M", "F"])  # Dropdown per SESSO
     data['ETA'] = st_col1.number_input(f"Inserisci Età", min_value=0, step=1, value=69)
@@ -89,7 +119,7 @@ def page_inference():
 
     # Mostra la tabella
     st.write("Riepilogo valori inseriti:")
-    st.dataframe(df)
+    st.dataframe(df.set_index(df.columns[0]))
 
 
     # Estrae il giorno dell'anno
@@ -108,7 +138,7 @@ def page_inference():
             'CBASE', 'METHB', 'PH', 'O2HB', 'COHB', 'B', 'TC', 'FIO2',
             'class_symptom', 'sin_day', 'cos_day']]
 
-    st_col1, st_col2, st_col3, _ = st.columns(4)
+    st_col1, st_col2, _, _ = st.columns(4)
 
     # Pulsante per avviare il calcolo
     if st_col1.button("Inferenza - 17 classi"):
@@ -157,6 +187,7 @@ def page_inference():
                         <strong>{maps_class(key)}</strong> : {value}
                     </div>
                 """, unsafe_allow_html=True)
+
 
 
     # Pulsante per avviare il calcolo
@@ -209,13 +240,13 @@ def page_inference():
 
 
 
-    if st_col3.button("Performance"):
-        st.session_state.page = "page_performance"
 
-
-def page_performance():
+def page_performance_17():
     st.markdown("""## Versione 17 classi
-***Descrizione classi:***
+Questa versione del modello è quella che mira ad assere la più completa in termini di esaustività e specificità delle classi. Ne segue però che il compito richiesto al modello è più difficile rispetto ad una versione in cui le classi sono accorpate in macrogruppi, di conseguenza avrà delle performance peggiori rispetto ad un modello con specificità minore.
+
+
+***Descrizione delle classi:***
 
 Le Diagnosi dei pazienti vengono raggruppate secondo la classificazione ICD-9 nei diciassette capitoli di appartenenza, qui sotto elencati:
 - 0 - TRM - Traumatismi e avvelenamenti
@@ -234,17 +265,75 @@ Le Diagnosi dei pazienti vengono raggruppate secondo la classificazione ICD-9 ne
 - 13 - LOC - Malattie del sistema osteomuscolare e del tessuto connettivo
 - 14 - MALF - Malformazioni congenite
 - 15 - P.NAT - Alcune condizioni morbose di origine perinatale
-- 16 - MAL - Sintomi, segni, e stati morbosi maldefiniti    
+- 16 - MAL - Sintomi, segni, e stati morbosi maldefiniti
+
+Di seguito sono consultabili le performance ottenute dal modello sui 10607 paziendi di test, tramite la matrice di confusione (https://it.wikipedia.org/wiki/Matrice_di_confusione).
+
+L'accuracy ottenuta in questo caso è del 49%.
     """)
 
     st.image("images/confusion_matrix_17_v1.jpeg", caption="Matrice di confusione del modello a 17 classi")
+
+    st.markdown("""Un'ulteriore analisi ha permesso di "accettare" le previsioni offerte dal modello, solo nel caso in cui "è più sicuro", ovvero quando esprime una confidenza superiore ad una certa soglia (***threshold***).
+    
+Così facendo, viene generata un'ulteriore classe: Indefinita (INDEF) che corrisponde a quei pazienti a cui non viene data una diagnosi (siccome il modello "non è abbastanza sicuro").
+
+Fissata la threshold sulla confidenza a ***0.65***, la matrice di confusione risultante è la seguente. In questo caso, l'accuracy ottenuta è del 74%, ma a costo di una diagnosi effettuata solo su circa un quarto dei pazienti.""")
+
+
     st.image("images/confusion_matrix_17_vth_65.jpeg", caption="Matrice di confusione del modello a 17 classi, fissata la threshold sulla confidenza a 0.65")
 
 
-
-
-
-
-
-    if st.button("Back to Inference"):
+    col91, col92, _  = st.columns(3)
+    if col91.button("Back to Inference"):
         st.session_state.page = "page_inference"
+    if col92.button("Performance - 6 classi"):
+        st.session_state.page = "page_performance_6"
+
+def page_performance_6():
+    st.markdown("""## Versione 17 classi
+Questa versione del modello è una versione con alcune classi accorpate. 
+
+Questa scelta è dovuta al fatto che alcune delle classi sono poche numerose, oppure non hanno un vero e proprio nesso clinico con i valori di emogas.
+
+Quindi per provare ad aumentare le performance del modello, mantenendo però una specificità tale da garantire un'uitilità clinica, si è scelto di sperimentale la versione con 6 classi.
+
+
+***Descrizione delle classi:***
+
+Le Diagnosi dei pazienti vengono raggruppate secondo la classificazione ICD-9 nei cinque capitoli qui sotto elencati. Le restanti diagnosi vengono accorpate nella classe ALTRO.
+- 0 - TRM - Traumatismi e avvelenamenti
+- 1 - INF - Malattie infettive e parassitarie
+- 2 - ALTRO - Le restanti classi accorpate
+- 3 - CARD - Malattie del sistema circolatorio
+- 4 - RESP - Malattie dell’apparato respiratorio
+- 5 - EMO - Malattie del sangue e organi emopoietici
+
+
+Di seguito sono consultabili le performance ottenute dal modello sui 10607 paziendi di test, tramite la matrice di confusione (https://it.wikipedia.org/wiki/Matrice_di_confusione).
+
+L'accuracy ottenuta in questo caso è del 65%.
+    """)
+
+    st.image("images/confusion_matrix_6_v1.png", caption="Matrice di confusione del modello a 6 classi")
+
+    st.markdown("""Un'ulteriore analisi ha permesso di "accettare" le previsioni offerte dal modello, solo nel caso in cui "è più sicuro", ovvero quando esprime una confidenza superiore ad una certa soglia (***threshold***).
+    
+Così facendo, viene generata un'ulteriore classe: Indefinita (INDEF) che corrisponde a quei pazienti a cui non viene data una diagnosi (siccome il modello "non è abbastanza sicuro").
+
+Fissata la threshold sulla confidenza a ***0.51***, la matrice di confusione risultante è la seguente. In questo caso, l'accuracy ottenuta è del 73%, ma garantendo comunque una diagnosi effettuata su circa tre quarti dei pazienti.""")
+
+
+    st.image("images/confusion_matrix_6_th_51.png", caption="Matrice di confusione del modello a 6 classi, fissata la threshold sulla confidenza a 0.51")
+
+
+    st.markdown("""Proseguendo le analisi nella stessa direzione, fissando la threshold sulla confidenza ***0.75***, la matrice di confusione risultante è la seguente. In questo caso, l'accuracy ottenuta è del 84%, ma effettuando una diagnosi solo su circa un terzo dei pazienti.""")
+
+
+    st.image("images/confusion_matrix_6_th_75.png", caption="Matrice di confusione del modello a 6 classi, fissata la threshold sulla confidenza a 0.75")
+
+    col91, col92, _ = st.columns(3)
+    if col91.button("Back to Inference"):
+        st.session_state.page = "page_inference"
+    if col92.button("Performance - 17 classi"):
+        st.session_state.page = "page_performance_17"
