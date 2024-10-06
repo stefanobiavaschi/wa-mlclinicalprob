@@ -17,7 +17,7 @@ Questo sito raccoglie i principali risultati ottenuti durante il lavoro svolto p
 
 L'obiettivo era quello di costruire un modello, basato sull'intelligenza artificiale e sui dati a disposizione, che prendesse in input i parametri estratti dall'Emogasanalisi (https://it.wikipedia.org/wiki/Emogasanalisi) classificando la patologia più probabile associata al paziente, sulla base di quanto appreso dai dati del passato.
 
-Sono state implementate diverse versione del modello, ognuna delle quali sono state testate sui dati di 10607 pazienti differenti.
+Sono state implementate diverse versione del modello, ognuna delle quali è stata testata sui dati di 10607 pazienti differenti.
 
 In questa pagina è possibile testare manualmente due tra i diversi modelli sviluppati, inserendo dei dati di test.
 
@@ -153,11 +153,11 @@ Inoltre, se esistono, verranno mostrate alcune patologie che il modello identifi
 
         # Determina il colore del riquadro in base a 'probability'
         if confidence < 0.3:
-            box_color = "#ffcccc"  # Rosso chiaro
+            box_color = "#cc0000"  # Rosso scuro
         elif confidence < 0.7:
-            box_color = "#ffffcc"  # Giallo chiaro
+            box_color = "#cccc00"  # Giallo scuro
         else:
-            box_color = "#ccffcc"  # Verde chiaro
+            box_color = "#006600"  # Verde scuro
 
         # Mostra il risultato in un riquadro colorato
         st.markdown(f"""
@@ -203,11 +203,11 @@ Inoltre, se esistono, verranno mostrate alcune patologie che il modello identifi
 
         # Determina il colore del riquadro in base a 'probability'
         if confidence < 0.3:
-            box_color = "#ffcccc"  # Rosso chiaro
+            box_color = "#cc0000"  # Rosso scuro
         elif confidence < 0.7:
-            box_color = "#ffffcc"  # Giallo chiaro
+            box_color = "#cccc00"  # Giallo scuro
         else:
-            box_color = "#ccffcc"  # Verde chiaro
+            box_color = "#006600"  # Verde scuro
 
         # Mostra il risultato in un riquadro colorato
         st.markdown(f"""
@@ -291,7 +291,7 @@ Fissata la threshold sulla confidenza a ***0.65***, la matrice di confusione ris
         st.session_state.page = "page_performance_6"
 
 def page_performance_6():
-    st.markdown("""## Versione 17 classi
+    st.markdown("""## Versione 6 classi
 Questa versione del modello è una versione con alcune classi accorpate. 
 
 Questa scelta è dovuta al fatto che alcune delle classi sono poche numerose, oppure non hanno un vero e proprio nesso clinico con i valori di emogas.
