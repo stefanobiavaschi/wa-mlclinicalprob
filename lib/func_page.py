@@ -21,28 +21,7 @@ Sono state implementate diverse versione del modello, ognuna delle quali è stat
 
 In questa pagina è possibile testare manualmente due tra i diversi modelli sviluppati, inserendo dei dati di test.
 
-Inoltre, è possibile consultare le performance ottenute dai due diversi modelli.
-
-
-
-#### Funzionamento dell'applicativo:
-Inserire i dati del paziente di test, dopodichè cliccare su uno dei bottoni per l'***Inferenza***.
-
-Ci sono due versioni del modello: la prima fa inferenza su una tra 17 possibili classi, la seconda fa inferenza su una tra 6 possibili classi.
-Per i dattagli, consultare le sezioni relative alle ***Performance***.
-
-Una volta cliccato il bottone inferenza, uscirà come risultato la ***patologia*** individuata dal modello per il paziente di test e la relativa ***confidenza***.
-
-Per valutare l'attendibilità del dato con una certa confidenza, consultare la corrispondente sezione delle ***Performance***.
-
-Inoltre, se esistono, verranno mostrate alcune patologie che il modello identifica successivamente, anche se con una confidenza minore.
-
-
-***N.B:*** 
-- Questa web-app ha lo scopo di illustrare il funzionamento dei modelli di AI costruiti durante lo sviluppo, ed in particolare di illustrare la struttura di input e di output.
-- Inoltre, i modello è stato addestrato sui dati degli Emogas condotti in pronto soccorso, quindi su dei pazienti con determinati sintomi.
-- Di conseguenza, questa web app non ha lo scopo (ne la capacità) di diagnosticare alcun tipo di patologia a dei pazienti che inseriscono in autonomia i propri dati.
-    """)
+Inoltre, è possibile consultare le performance ottenute dai due diversi modelli.""")
 
     st.markdown("""### Per consultare le performance """)
 
@@ -53,6 +32,27 @@ Inoltre, se esistono, verranno mostrate alcune patologie che il modello identifi
 
     if st_col2.button("Performance - 6 classi"):
         st.session_state.page = "page_performance_6"
+
+
+    st.markdown("""
+#### Funzionamento dell'applicativo:
+Inserire i dati del paziente di test, dopodichè cliccare su uno dei bottoni per l'***Inferenza***.
+
+Ci sono due versioni del modello: la prima fa inferenza su una tra 17 possibili classi, la seconda fa inferenza su una tra 6 possibili classi.
+Per i dattagli, consultare le sezioni relative alle ***Performance***.
+
+Una volta cliccato il bottone inferenza, uscirà come risultato la ***patologia*** individuata dal modello per il paziente di test e la relativa ***confidenza***.
+
+Per valutare l'attendibilità del dato con una certa confidenza, consultare la corrispondente sezione delle ***Performance***.
+
+Inoltre, se esistono, verranno mostrate altre patologie che il modello identifica, anche se con una confidenza minore.
+
+
+***N.B:*** 
+- Questa web-app ha lo scopo di illustrare il funzionamento dei modelli di AI costruiti durante lo sviluppo, ed in particolare di illustrare la struttura di input e di output.
+- Inoltre, i modelli sono stati addestrati sui dati degli Emogas condotti in pronto soccorso, quindi su dei pazienti con determinati sintomi.
+- Di conseguenza, questa web app non ha lo scopo (ne la capacità) di diagnosticare alcun tipo di patologia a dei pazienti che inseriscono in autonomia i propri dati.
+    """)
 
 
     st.markdown(""" ### Sezione per l'inferenza """)
@@ -170,6 +170,8 @@ Inoltre, se esistono, verranno mostrate alcune patologie che il modello identifi
 
         sorted_D = dict(sorted(D.items(), key=lambda item: item[1], reverse=True)[1:5])
 
+        st.markdown("")
+
         # Crea due colonne
         st_col21, st_col22 = st.columns(2)
 
@@ -220,23 +222,27 @@ Inoltre, se esistono, verranno mostrate alcune patologie che il modello identifi
 
         sorted_D = dict(sorted(D.items(), key=lambda item: item[1], reverse=True)[1:3])
 
+        st.markdown("")
+
         # Crea due colonne
         st_col21, st_col22 = st.columns(2)
 
         # Mostra i primi due elementi nella prima colonna e i successivi due nella seconda
         for i, (key, value) in enumerate(sorted_D.items()):
-            if i ==1:
+            if i ==0:
                 st_col21.markdown(f"""
                     <div style="background-color: lightgray; padding: 10px; border-radius: 5px; margin-bottom: 10px;">
                         <strong>{maps_class(key)}</strong> : {value}
                     </div>
                 """, unsafe_allow_html=True)
+                st_col21.markdown("")
             else:
                 st_col22.markdown(f"""
                     <div style="background-color: lightgray; padding: 10px; border-radius: 5px; margin-bottom: 10px;">
                         <strong>{maps_class(key)}</strong> : {value}
                     </div>
                 """, unsafe_allow_html=True)
+                st_col22.markdown("")
 
 
 
